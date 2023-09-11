@@ -1,3 +1,5 @@
+import 'package:firebase_app/home/pages/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'auth/pages/login.dart';
@@ -16,15 +18,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Firebase App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Login(),
+      home: FirebaseAuth.instance.currentUser == null
+          ? const Login()
+          : const Home(),
       routes: {
         "login": (context) => const Login(),
         "register": (context) => const Register(),
+        "home": (context) => const Home(),
       },
     );
   }
