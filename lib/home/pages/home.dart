@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -11,6 +12,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   /* ========= Business Logic ========= */
   void logout() {
+    GoogleSignIn googleSignIn = GoogleSignIn();
+    googleSignIn.disconnect();
     FirebaseAuth.instance.signOut();
     Navigator.of(context).pushNamedAndRemoveUntil("login", (route) => false);
   }

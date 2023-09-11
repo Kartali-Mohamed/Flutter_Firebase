@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../widgets/custom_buttonauth.dart';
 import '../widgets/custom_buttongoogle.dart';
 import '../widgets/custom_forgotpassword.dart';
@@ -48,6 +49,25 @@ class _LoginState extends State<Login> {
               .showSnackBar(SnackBar(content: Text(e.message!)));
         }
       }
+    }
+  }
+
+  void signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    if (googleUser != null) {
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
     }
   }
 
@@ -104,7 +124,9 @@ class _LoginState extends State<Login> {
                 login(emailController.text, passwordController.text);
               }),
           const SizedBox(height: 20),
-          CustomButtonGoogle(onPressed: () {}),
+          CustomButtonGoogle(onPressed: () {
+            signInWithGoogle();
+          }),
           const SizedBox(height: 20),
           CustomQuestion(
               question: "Don't Have An Account ? ",
