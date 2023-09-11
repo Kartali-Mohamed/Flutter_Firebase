@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../widgets/custom_forgotpassword.dart';
 import '../widgets/custom_question.dart';
 import '../widgets/custom_subtitlepage.dart';
 import '../widgets/custom_titlepage.dart';
@@ -110,7 +109,6 @@ class _Registertate extends State<Register> {
                     return null;
                   },
                 ),
-                CustomForgotPassword(onTap: () {}),
               ],
             ),
           ),
