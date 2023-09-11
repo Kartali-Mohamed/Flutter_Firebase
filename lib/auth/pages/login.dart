@@ -27,7 +27,13 @@ class _LoginState extends State<Login> {
       try {
         await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password);
-        Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
+        if (FirebaseAuth.instance.currentUser!.emailVerified) {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil("home", (route) => false);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Please verify your email address to login.")));
+        }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           ScaffoldMessenger.of(context).showSnackBar(

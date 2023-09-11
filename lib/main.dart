@@ -24,9 +24,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: FirebaseAuth.instance.currentUser == null
-          ? const Login()
-          : const Home(),
+      home: (FirebaseAuth.instance.currentUser != null &&
+              FirebaseAuth.instance.currentUser!.emailVerified)
+          ? const Home()
+          : const Login(),
       routes: {
         "login": (context) => const Login(),
         "register": (context) => const Register(),

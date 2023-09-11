@@ -30,7 +30,9 @@ class _Registertate extends State<Register> {
           email: email,
           password: password,
         );
-        Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
+        FirebaseAuth.instance.currentUser!.sendEmailVerification();
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil("login", (route) => false);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
