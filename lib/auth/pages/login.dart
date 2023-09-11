@@ -71,6 +71,20 @@ class _LoginState extends State<Login> {
     }
   }
 
+  void resetPassword(String email) async {
+    try {
+      if (emailController.text.isNotEmpty) {
+        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("You received email for reset password")));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              "There is no user record corresponding to this identifier")));
+    }
+  }
+
   /* ========= Presentation ========= */
   @override
   Widget build(BuildContext context) {
@@ -114,7 +128,9 @@ class _LoginState extends State<Login> {
                     return null;
                   },
                 ),
-                CustomForgotPassword(onTap: () {}),
+                CustomForgotPassword(onTap: () {
+                  resetPassword(emailController.text);
+                }),
               ],
             ),
           ),

@@ -112,6 +112,7 @@ class _Registertate extends State<Register> {
               ],
             ),
           ),
+          const SizedBox(height: 30),
           CustomButtonAuth(
               title: "SignUp",
               onPressed: () {
