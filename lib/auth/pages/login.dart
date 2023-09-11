@@ -25,7 +25,7 @@ class _LoginState extends State<Login> {
   void login(String email, String password) async {
     if (formStateKey.currentState!.validate()) {
       try {
-        final credential = await FirebaseAuth.instance
+        await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password);
         Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
       } on FirebaseAuthException catch (e) {

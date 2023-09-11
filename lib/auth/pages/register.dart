@@ -26,8 +26,7 @@ class _Registertate extends State<Register> {
   void signUp(String email, String password) async {
     if (formStateKey.currentState!.validate()) {
       try {
-        final credential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
