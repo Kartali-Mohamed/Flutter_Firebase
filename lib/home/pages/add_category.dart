@@ -19,16 +19,18 @@ class _AddCategoryState extends State<AddCategory> {
       FirebaseFirestore.instance.collection('categories');
 
   void addCategory(String name) {
-    categories.add({
-      'name': name,
-    }).then((value) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Category added.")));
-      Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
-    }).catchError((error) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Failed to add user: $error")));
-    });
+    if (formStateKey.currentState!.validate()) {
+      categories.add({
+        'name': name,
+      }).then((value) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Category added.")));
+        Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Failed to add user: $error")));
+      });
+    }
   }
 
   /* ========= Presentation ========= */
