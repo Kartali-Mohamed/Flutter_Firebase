@@ -1,3 +1,4 @@
+import 'package:firebase_app/home/pages/add_folder.dart';
 import 'package:firebase_app/home/pages/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Firebase App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         useMaterial3: true,
       ),
       home: (FirebaseAuth.instance.currentUser != null &&
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         "login": (context) => const Login(),
         "register": (context) => const Register(),
         "home": (context) => const Home(),
+        "addfolder": (context) => const AddFolder(),
       },
     );
   }

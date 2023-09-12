@@ -1,3 +1,4 @@
+import 'package:firebase_app/home/widgets/custom_homecardfolder.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -29,14 +30,40 @@ class _HomeState extends State<Home> {
               onPressed: () {
                 logout();
               },
-              icon: const Icon(Icons.logout))
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.orange,
+              ))
         ],
       ),
-      body: const Center(
-        child: Text(
-          "Welcome Home",
-          style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed("addfolder");
+        },
+        child: const Icon(Icons.add),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: GridView(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisExtent: 145,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5),
+            children: const [
+              HomeCardFolder(title: "Company"),
+              HomeCardFolder(title: "Home"),
+              HomeCardFolder(title: "Company"),
+              HomeCardFolder(title: "Home"),
+              HomeCardFolder(title: "Company"),
+              HomeCardFolder(title: "Home"),
+              HomeCardFolder(title: "Company"),
+              HomeCardFolder(title: "Home"),
+              HomeCardFolder(title: "Company"),
+              HomeCardFolder(title: "Home"),
+              HomeCardFolder(title: "Company"),
+              HomeCardFolder(title: "Home"),
+            ]),
       ),
     );
   }
