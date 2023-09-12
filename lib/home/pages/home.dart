@@ -14,14 +14,20 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   /* ========= Business Logic ========= */
   List<QueryDocumentSnapshot> listCategories = [];
+  CollectionReference categories =
+      FirebaseFirestore.instance.collection("categories");
   bool isLoading = true;
 
   void getCategories() async {
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection("categories").get();
+    QuerySnapshot querySnapshot = await categories.get();
     listCategories.addAll(querySnapshot.docs);
     isLoading = false;
     setState(() {});
+  }
+
+  void deleteCategoryById(String categoryId) async {
+    await categories.doc(categoryId).delete();
+    Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
   }
 
   void logout() {
@@ -74,7 +80,32 @@ class _HomeState extends State<Home> {
                     crossAxisSpacing: 5),
                 itemCount: listCategories.length,
                 itemBuilder: (context, index) {
-                  return HomeCardFolder(title: listCategories[index]['name']);
+                  return HomeCardFolder(
+                    title: listCategories[index]['name'],
+                    onLongPress: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text("Delete category"),
+                          content: const Text("Are you sure for deleting?"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                deleteCategoryById(listCategories[index].id);
+                              },
+                              child: const Text('Yes'),
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  );
                 },
               ),
       ),
