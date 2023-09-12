@@ -38,7 +38,7 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushNamed("addfolder");
+          Navigator.of(context).pushNamed("addcategory");
         },
         child: const Icon(Icons.add),
       ),
@@ -52,17 +52,6 @@ class _HomeState extends State<Home> {
                 crossAxisSpacing: 5),
             children: const [
               HomeCardFolder(title: "Company"),
-              HomeCardFolder(title: "Home"),
-              HomeCardFolder(title: "Company"),
-              HomeCardFolder(title: "Home"),
-              HomeCardFolder(title: "Company"),
-              HomeCardFolder(title: "Home"),
-              HomeCardFolder(title: "Company"),
-              HomeCardFolder(title: "Home"),
-              HomeCardFolder(title: "Company"),
-              HomeCardFolder(title: "Home"),
-              HomeCardFolder(title: "Company"),
-              HomeCardFolder(title: "Home"),
             ]),
       ),
     );

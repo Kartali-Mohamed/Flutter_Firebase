@@ -1,25 +1,42 @@
-import 'package:firebase_app/home/widgets/custom_addbuttonfolder.dart';
+import 'package:firebase_app/home/widgets/custom_addbuttoncategory.dart';
 import 'package:firebase_app/home/widgets/custom_addtextform.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AddFolder extends StatefulWidget {
-  const AddFolder({Key? key}) : super(key: key);
+class AddCategory extends StatefulWidget {
+  const AddCategory({Key? key}) : super(key: key);
 
   @override
-  State<AddFolder> createState() => _AddFolderState();
+  State<AddCategory> createState() => _AddCategoryState();
 }
 
-class _AddFolderState extends State<AddFolder> {
+class _AddCategoryState extends State<AddCategory> {
   /* ========= Business Logic ========= */
   GlobalKey<FormState> formStateKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
+
+  CollectionReference categories =
+      FirebaseFirestore.instance.collection('categories');
+
+  void addCategory(String name) {
+    categories.add({
+      'name': name,
+    }).then((value) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Category added.")));
+      Navigator.of(context).pop();
+    }).catchError((error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Failed to add user: $error")));
+    });
+  }
 
   /* ========= Presentation ========= */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Folder"),
+        title: const Text("Add Category"),
       ),
       body: Form(
         key: formStateKey,
@@ -37,7 +54,9 @@ class _AddFolderState extends State<AddFolder> {
                     return null;
                   }),
               const SizedBox(height: 20),
-              CustomAddButtonFolder(onPressed: () {}),
+              CustomAddButtonCategory(onPressed: () {
+                addCategory(nameController.text);
+              }),
             ],
           ),
         ),

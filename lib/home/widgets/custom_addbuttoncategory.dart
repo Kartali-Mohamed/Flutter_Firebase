@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class CustomAddButtonFolder extends StatelessWidget {
+class CustomAddButtonCategory extends StatelessWidget {
   final void Function()? onPressed;
-  const CustomAddButtonFolder({super.key, required this.onPressed});
+  const CustomAddButtonCategory({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class CustomAddButtonFolder extends StatelessWidget {
       color: Colors.orange,
       textColor: Colors.white,
       onPressed: onPressed,
-      child: const Text("Add folder"),
+      child: const Text("Add category"),
     );
   }
 }

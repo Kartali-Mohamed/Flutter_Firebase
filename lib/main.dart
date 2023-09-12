@@ -1,4 +1,4 @@
-import 'package:firebase_app/home/pages/add_folder.dart';
+import 'package:firebase_app/home/pages/add_category.dart';
 import 'package:firebase_app/home/pages/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         "login": (context) => const Login(),
         "register": (context) => const Register(),
         "home": (context) => const Home(),
-        "addfolder": (context) => const AddFolder(),
+        "addcategory": (context) => const AddCategory(),
       },
     );
   }
