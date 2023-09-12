@@ -22,12 +22,17 @@ class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   GlobalKey<FormState> formStateKey = GlobalKey<FormState>();
+  bool isLoading = false;
 
   void login(String email, String password) async {
     if (formStateKey.currentState!.validate()) {
       try {
+        isLoading = true;
+        setState(() {});
         await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password);
+        isLoading = false;
+        setState(() {});
         if (FirebaseAuth.instance.currentUser!.emailVerified) {
           Navigator.of(context)
               .pushNamedAndRemoveUntil("home", (route) => false);
@@ -37,14 +42,20 @@ class _LoginState extends State<Login> {
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
+          isLoading = false;
+          setState(() {});
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("No user found for that email.")));
           // print('No user found for that email.');
         } else if (e.code == 'wrong-password') {
+          isLoading = false;
+          setState(() {});
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text("Wrong password provided for that user.")));
           // print('Wrong password provided for that user.');
         } else {
+          isLoading = false;
+          setState(() {});
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(e.message!)));
         }
@@ -91,66 +102,70 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: ListView(children: [
-          Form(
-            key: formStateKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 50),
-                const CustomTitlePage(title: "Login"),
-                const SizedBox(height: 10),
-                const CustomSubtitlePage(
-                    subtitle: "Login To Continue Using The App"),
+        child: isLoading == true
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView(children: [
+                Form(
+                  key: formStateKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 50),
+                      const CustomTitlePage(title: "Login"),
+                      const SizedBox(height: 10),
+                      const CustomSubtitlePage(
+                          subtitle: "Login To Continue Using The App"),
+                      const SizedBox(height: 20),
+                      const CustomTitle(text: "Email"),
+                      const SizedBox(height: 10),
+                      CustomTextForm(
+                        hinttext: "ُEnter Your Email",
+                        mycontroller: emailController,
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "please enter your email";
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      const CustomTitle(text: "Password"),
+                      const SizedBox(height: 10),
+                      CustomTextForm(
+                        hinttext: "ُEnter Your Password",
+                        mycontroller: passwordController,
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "please enter your password";
+                          }
+                          return null;
+                        },
+                      ),
+                      CustomForgotPassword(onTap: () {
+                        resetPassword(emailController.text);
+                      }),
+                    ],
+                  ),
+                ),
+                CustomButtonAuth(
+                    title: "login",
+                    onPressed: () {
+                      login(emailController.text, passwordController.text);
+                    }),
                 const SizedBox(height: 20),
-                const CustomTitle(text: "Email"),
-                const SizedBox(height: 10),
-                CustomTextForm(
-                  hinttext: "ُEnter Your Email",
-                  mycontroller: emailController,
-                  validator: (val) {
-                    if (val!.isEmpty) {
-                      return "please enter your email";
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10),
-                const CustomTitle(text: "Password"),
-                const SizedBox(height: 10),
-                CustomTextForm(
-                  hinttext: "ُEnter Your Password",
-                  mycontroller: passwordController,
-                  validator: (val) {
-                    if (val!.isEmpty) {
-                      return "please enter your password";
-                    }
-                    return null;
-                  },
-                ),
-                CustomForgotPassword(onTap: () {
-                  resetPassword(emailController.text);
+                CustomButtonGoogle(onPressed: () {
+                  signInWithGoogle();
                 }),
-              ],
-            ),
-          ),
-          CustomButtonAuth(
-              title: "login",
-              onPressed: () {
-                login(emailController.text, passwordController.text);
-              }),
-          const SizedBox(height: 20),
-          CustomButtonGoogle(onPressed: () {
-            signInWithGoogle();
-          }),
-          const SizedBox(height: 20),
-          CustomQuestion(
-              question: "Don't Have An Account ? ",
-              answer: "Register",
-              onTap: () {
-                Navigator.of(context).pushNamed("register");
-              }),
-        ]),
+                const SizedBox(height: 20),
+                CustomQuestion(
+                    question: "Don't Have An Account ? ",
+                    answer: "Register",
+                    onTap: () {
+                      Navigator.of(context).pushNamed("register");
+                    }),
+              ]),
       ),
     );
   }

@@ -14,11 +14,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   /* ========= Business Logic ========= */
   List<QueryDocumentSnapshot> listCategories = [];
+  bool isLoading = true;
 
   void getCategories() async {
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection("categories").get();
     listCategories.addAll(querySnapshot.docs);
+    isLoading = false;
     setState(() {});
   }
 
@@ -60,17 +62,21 @@ class _HomeState extends State<Home> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisExtent: 145,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5),
-          itemCount: listCategories.length,
-          itemBuilder: (context, index) {
-            return HomeCardFolder(title: listCategories[index]['name']);
-          },
-        ),
+        child: isLoading == true
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisExtent: 145,
+                    mainAxisSpacing: 5,
+                    crossAxisSpacing: 5),
+                itemCount: listCategories.length,
+                itemBuilder: (context, index) {
+                  return HomeCardFolder(title: listCategories[index]['name']);
+                },
+              ),
       ),
     );
   }
