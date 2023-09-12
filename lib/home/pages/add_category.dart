@@ -24,7 +24,7 @@ class _AddCategoryState extends State<AddCategory> {
     }).then((value) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Category added.")));
-      Navigator.of(context).pop();
+      Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
     }).catchError((error) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Failed to add user: $error")));
