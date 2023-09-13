@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class CustomAddButtonCategory extends StatelessWidget {
+class CustomButtonCategory extends StatelessWidget {
   final void Function()? onPressed;
   final String type;
-  const CustomAddButtonCategory(
+  const CustomButtonCategory(
       {super.key, required this.onPressed, required this.type});
 
   @override

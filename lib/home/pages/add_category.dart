@@ -72,7 +72,7 @@ class _AddCategoryState extends State<AddCategory> {
                           return null;
                         }),
                     const SizedBox(height: 20),
-                    CustomAddButtonCategory(
+                    CustomButtonCategory(
                       onPressed: () {
                         addCategory(nameController.text);
                       },
