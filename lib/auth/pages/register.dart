@@ -53,6 +53,14 @@ class _Registertate extends State<Register> {
     }
   }
 
+  @override
+  void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   /* ========= Presentation ========= */
   @override
   Widget build(BuildContext context) {

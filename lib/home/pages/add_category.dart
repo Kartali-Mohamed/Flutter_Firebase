@@ -39,6 +39,12 @@ class _AddCategoryState extends State<AddCategory> {
     }
   }
 
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
   /* ========= Presentation ========= */
   @override
   Widget build(BuildContext context) {

@@ -92,6 +92,13 @@ class _LoginState extends State<Login> {
     }
   }
 
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   /* ========= Presentation ========= */
   @override
   Widget build(BuildContext context) {

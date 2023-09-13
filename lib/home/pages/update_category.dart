@@ -46,6 +46,12 @@ class _UpdateCategoryState extends State<UpdateCategory> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
   /* ========= Presentation ========= */
   @override
   Widget build(BuildContext context) {
