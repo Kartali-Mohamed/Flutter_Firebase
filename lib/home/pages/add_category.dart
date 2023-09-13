@@ -1,5 +1,6 @@
 import 'package:firebase_app/home/widgets/custom_addbuttoncategory.dart';
 import 'package:firebase_app/home/widgets/custom_addtextform.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -21,6 +22,7 @@ class _AddCategoryState extends State<AddCategory> {
   void addCategory(String name) {
     if (formStateKey.currentState!.validate()) {
       categories.add({
+        'id': FirebaseAuth.instance.currentUser!.uid,
         'name': name,
       }).then((value) {
         ScaffoldMessenger.of(context)

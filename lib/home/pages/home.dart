@@ -19,7 +19,9 @@ class _HomeState extends State<Home> {
   bool isLoading = true;
 
   void getCategories() async {
-    QuerySnapshot querySnapshot = await categories.get();
+    QuerySnapshot querySnapshot = await categories
+        .where("id", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
     listCategories.addAll(querySnapshot.docs);
     isLoading = false;
     setState(() {});
