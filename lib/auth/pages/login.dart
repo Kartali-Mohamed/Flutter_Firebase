@@ -31,31 +31,27 @@ class _LoginState extends State<Login> {
         setState(() {});
         await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password);
-        isLoading = false;
-        setState(() {});
         if (FirebaseAuth.instance.currentUser!.emailVerified) {
           Navigator.of(context)
               .pushNamedAndRemoveUntil("home", (route) => false);
         } else {
+          isLoading = false;
+          setState(() {});
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text("Please verify your email address to login.")));
         }
       } on FirebaseAuthException catch (e) {
+        isLoading = false;
+        setState(() {});
         if (e.code == 'user-not-found') {
-          isLoading = false;
-          setState(() {});
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("No user found for that email.")));
           // print('No user found for that email.');
         } else if (e.code == 'wrong-password') {
-          isLoading = false;
-          setState(() {});
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text("Wrong password provided for that user.")));
           // print('Wrong password provided for that user.');
         } else {
-          isLoading = false;
-          setState(() {});
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(e.message!)));
         }
