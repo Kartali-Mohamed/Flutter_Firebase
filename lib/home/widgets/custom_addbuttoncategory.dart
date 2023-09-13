@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class CustomAddButtonCategory extends StatelessWidget {
   final void Function()? onPressed;
-  const CustomAddButtonCategory({super.key, required this.onPressed});
+  final String type;
+  const CustomAddButtonCategory(
+      {super.key, required this.onPressed, required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class CustomAddButtonCategory extends StatelessWidget {
       color: Colors.orange,
       textColor: Colors.white,
       onPressed: onPressed,
-      child: const Text("Add category"),
+      child: Text("$type category"),
     );
   }
 }

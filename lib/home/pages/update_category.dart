@@ -1,17 +1,19 @@
 import 'package:firebase_app/home/widgets/custom_addbuttoncategory.dart';
 import 'package:firebase_app/home/widgets/custom_addtextform.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AddCategory extends StatefulWidget {
-  const AddCategory({Key? key}) : super(key: key);
+class UpdateCategory extends StatefulWidget {
+  final String id;
+  final String name;
+  const UpdateCategory({Key? key, required this.id, required this.name})
+      : super(key: key);
 
   @override
-  State<AddCategory> createState() => _AddCategoryState();
+  State<UpdateCategory> createState() => _UpdateCategoryState();
 }
 
-class _AddCategoryState extends State<AddCategory> {
+class _UpdateCategoryState extends State<UpdateCategory> {
   /* ========= Business Logic ========= */
   GlobalKey<FormState> formStateKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
@@ -19,24 +21,29 @@ class _AddCategoryState extends State<AddCategory> {
   CollectionReference categories =
       FirebaseFirestore.instance.collection('categories');
 
-  void addCategory(String name) {
+  void updateCategory(String name) {
     if (formStateKey.currentState!.validate()) {
       isLoading = true;
       setState(() {});
-      categories.add({
-        'id': FirebaseAuth.instance.currentUser!.uid,
+      categories.doc(widget.id).update({
         'name': name,
       }).then((value) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Category added.")));
+            .showSnackBar(const SnackBar(content: Text("Category updated.")));
         Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
       }).catchError((error) {
         isLoading = false;
         setState(() {});
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Failed to add user: $error")));
+            SnackBar(content: Text("Failed to update user: $error")));
       });
     }
+  }
+
+  @override
+  void initState() {
+    nameController.text = widget.name;
+    super.initState();
   }
 
   /* ========= Presentation ========= */
@@ -44,7 +51,7 @@ class _AddCategoryState extends State<AddCategory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Category"),
+        title: const Text("Update Category"),
       ),
       body: isLoading == true
           ? const Center(
@@ -68,9 +75,9 @@ class _AddCategoryState extends State<AddCategory> {
                     const SizedBox(height: 20),
                     CustomAddButtonCategory(
                       onPressed: () {
-                        addCategory(nameController.text);
+                        updateCategory(nameController.text);
                       },
-                      type: 'Add',
+                      type: 'Update',
                     ),
                   ],
                 ),
