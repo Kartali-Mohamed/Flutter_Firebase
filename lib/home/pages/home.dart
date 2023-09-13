@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app/home/pages/update_category.dart';
+import 'package:firebase_app/home/widgets/custom_alertdialog.dart';
 import 'package:firebase_app/home/widgets/custom_homecardfolder.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -88,28 +89,18 @@ class _HomeState extends State<Home> {
                     onLongPress: () {
                       showDialog(
                         context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text("Category Options"),
-                          content: const Text("What do you want?"),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                deleteCategoryById(listCategories[index].id);
-                              },
-                              child: const Text('Delete'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => UpdateCategory(
-                                      id: listCategories[index].id,
-                                      name: listCategories[index]['name']),
-                                ));
-                              },
-                              child: const Text('Update'),
-                            )
-                          ],
+                        builder: (context) => CustomAlertDialog(
+                          onDelete: () {
+                            deleteCategoryById(listCategories[index].id);
+                          },
+                          onUpdate: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => UpdateCategory(
+                                  id: listCategories[index].id,
+                                  name: listCategories[index]['name']),
+                            ));
+                          },
                         ),
                       );
                     },
