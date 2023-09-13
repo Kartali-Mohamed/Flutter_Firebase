@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app/home/pages/update_category.dart';
 import 'package:firebase_app/home/widgets/custom_alertdialog.dart';
 import 'package:firebase_app/home/widgets/custom_homecardfolder.dart';
+import 'package:firebase_app/note/pages/view_note.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -86,6 +87,12 @@ class _HomeState extends State<Home> {
                 itemBuilder: (context, index) {
                   return HomeCardFolder(
                     title: listCategories[index]['name'],
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            ViewNote(docId: listCategories[index].id),
+                      ));
+                    },
                     onLongPress: () {
                       showDialog(
                         context: context,
