@@ -32,11 +32,13 @@ class _LoginState extends State<Login> {
         await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password);
         if (FirebaseAuth.instance.currentUser!.emailVerified) {
+          if (!mounted) return;
           Navigator.of(context)
               .pushNamedAndRemoveUntil("home", (route) => false);
         } else {
           isLoading = false;
           setState(() {});
+          if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text("Please verify your email address to login.")));
         }
@@ -73,7 +75,7 @@ class _LoginState extends State<Login> {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
-
+      if (!mounted) return;
       Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
     }
   }
@@ -82,6 +84,7 @@ class _LoginState extends State<Login> {
     try {
       if (emailController.text.isNotEmpty) {
         await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("You received email for reset password")));
       }

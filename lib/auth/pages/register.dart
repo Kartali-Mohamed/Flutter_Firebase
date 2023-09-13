@@ -32,6 +32,7 @@ class _Registertate extends State<Register> {
           password: password,
         );
         FirebaseAuth.instance.currentUser!.sendEmailVerification();
+        if (!mounted) return;
         Navigator.of(context)
             .pushNamedAndRemoveUntil("login", (route) => false);
       } on FirebaseAuthException catch (e) {

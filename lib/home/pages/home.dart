@@ -32,6 +32,7 @@ class _HomeState extends State<Home> {
 
   void deleteCategoryById(String categoryId) async {
     await categories.doc(categoryId).delete();
+    if (!mounted) return;
     Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
   }
 

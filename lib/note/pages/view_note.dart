@@ -38,6 +38,7 @@ class _ViewNoteState extends State<ViewNote> {
         .collection("notes");
 
     await notes.doc(id).delete();
+    if (!mounted) return;
     Navigator.of(context).pop();
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => ViewNote(docId: widget.docId)));
