@@ -1,8 +1,13 @@
+import 'dart:io';
 import 'package:firebase_app/note/pages/view_note.dart';
 import 'package:firebase_app/note/widgets/custom_notebutton.dart';
+import 'package:firebase_app/note/widgets/custom_noteimagebutton.dart';
 import 'package:firebase_app/note/widgets/custom_notetextform.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddNote extends StatefulWidget {
   final String docId;
@@ -18,8 +23,10 @@ class _AddNoteState extends State<AddNote> {
   TextEditingController titleController = TextEditingController();
   TextEditingController subtitleController = TextEditingController();
   bool isLoading = false;
+  File? file;
+  String? url;
 
-  void addNote(String title, String subtitle) {
+  void addNote(String title, String subtitle, BuildContext context) {
     if (formStateKey.currentState!.validate()) {
       isLoading = true;
       setState(() {});
@@ -31,6 +38,7 @@ class _AddNoteState extends State<AddNote> {
       notes.add({
         'title': title,
         'subtitle': subtitle,
+        'url': url ?? "none",
       }).then((value) {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Note added.")));
@@ -44,6 +52,22 @@ class _AddNoteState extends State<AddNote> {
             SnackBar(content: Text("Failed to add user: $error")));
       });
     }
+  }
+
+  void addImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? imagePicked =
+        await picker.pickImage(source: ImageSource.camera);
+
+    if (imagePicked != null) {
+      file = File(imagePicked.path);
+      var imageName = basename(imagePicked.path);
+      var refStorge = FirebaseStorage.instance.ref("images").child(imageName);
+      await refStorge.putFile(file!);
+      url = await refStorge.getDownloadURL();
+    }
+
+    setState(() {});
   }
 
   @override
@@ -90,9 +114,16 @@ class _AddNoteState extends State<AddNote> {
                           return null;
                         }),
                     const SizedBox(height: 20),
+                    CustomNoteImageButton(
+                        onPressed: () {
+                          addImage();
+                        },
+                        isSelected: url == null ? false : true),
+                    const SizedBox(height: 10),
                     CustomNoteButton(
                       onPressed: () {
-                        addNote(titleController.text, subtitleController.text);
+                        addNote(titleController.text, subtitleController.text,
+                            context);
                       },
                       type: 'Add',
                     ),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app/note/pages/add_note.dart';
 import 'package:firebase_app/note/pages/update_note.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class ViewNote extends StatefulWidget {
@@ -28,7 +29,7 @@ class _ViewNoteState extends State<ViewNote> {
     setState(() {});
   }
 
-  void deleteNoteById(String id) async {
+  void deleteNoteById(String id, bool checkImage, String url) async {
     isLoading = true;
     setState(() {});
 
@@ -36,8 +37,12 @@ class _ViewNoteState extends State<ViewNote> {
         .collection("categories")
         .doc(widget.docId)
         .collection("notes");
-
     await notes.doc(id).delete();
+
+    if (checkImage) {
+      await FirebaseStorage.instance.refFromURL(url).delete();
+    }
+
     if (!mounted) return;
     Navigator.of(context).pop();
     Navigator.of(context).pushReplacement(
@@ -98,7 +103,12 @@ class _ViewNoteState extends State<ViewNote> {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    deleteNoteById(listNotes[index].id);
+                                    bool checkImage =
+                                        listNotes[index]["url"] != "none"
+                                            ? true
+                                            : false;
+                                    deleteNoteById(listNotes[index].id,
+                                        checkImage, listNotes[index]["url"]);
                                   },
                                   child: const Text('Yes'),
                                 )
@@ -106,9 +116,28 @@ class _ViewNoteState extends State<ViewNote> {
                             ));
                   },
                   child: Card(
-                    child: ListTile(
-                      title: Text(listNotes[index]["title"]),
-                      subtitle: Text(listNotes[index]["subtitle"]),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: ListTile(
+                              title: Text(listNotes[index]["title"]),
+                              subtitle: Text(listNotes[index]["subtitle"]),
+                            ),
+                          ),
+                          if (listNotes[index]["url"] != "none")
+                            Expanded(
+                              flex: 1,
+                              child: Image.network(
+                                listNotes[index]["url"],
+                                fit: BoxFit.cover,
+                                height: 70,
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
