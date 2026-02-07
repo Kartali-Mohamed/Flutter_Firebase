@@ -10,12 +10,11 @@ class UpdateNote extends StatefulWidget {
   final String noteTitle;
   final String noteSubtitle;
   const UpdateNote(
-      {Key? key,
+      {super.key,
       required this.docId,
       required this.noteId,
       required this.noteTitle,
-      required this.noteSubtitle})
-      : super(key: key);
+      required this.noteSubtitle});
 
   @override
   State<UpdateNote> createState() => _UpdateNoteState();
@@ -23,43 +22,53 @@ class UpdateNote extends StatefulWidget {
 
 class _UpdateNoteState extends State<UpdateNote> {
   /* ========= Business Logic ========= */
-  GlobalKey<FormState> formStateKey = GlobalKey<FormState>();
-  TextEditingController titleController = TextEditingController();
-  TextEditingController subtitleController = TextEditingController();
+  late GlobalKey<FormState> formStateKey;
+  late TextEditingController titleController;
+  late TextEditingController subtitleController;
   bool isLoading = false;
+  late CollectionReference notes;
+
+  @override
+  void initState() {
+    formStateKey = GlobalKey<FormState>();
+    titleController = TextEditingController();
+    subtitleController = TextEditingController();
+
+    notes = FirebaseFirestore.instance
+        .collection("categories")
+        .doc(widget.docId)
+        .collection("notes");
+
+    titleController.text = widget.noteTitle;
+    subtitleController.text = widget.noteSubtitle;
+    super.initState();
+  }
 
   void updateNote(String title, String subtitle) {
     if (formStateKey.currentState!.validate()) {
       isLoading = true;
       setState(() {});
-      CollectionReference notes = FirebaseFirestore.instance
-          .collection("categories")
-          .doc(widget.docId)
-          .collection("notes");
 
       notes.doc(widget.noteId).update({
         'title': title,
         'subtitle': subtitle,
       }).then((value) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Note updated.")));
+
         Navigator.of(context).pop();
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => ViewNote(docId: widget.docId)));
       }).catchError((error) {
         isLoading = false;
         setState(() {});
+
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Failed to add user: $error")));
       });
     }
-  }
-
-  @override
-  void initState() {
-    titleController.text = widget.noteTitle;
-    subtitleController.text = widget.noteSubtitle;
-    super.initState();
   }
 
   @override
@@ -78,7 +87,9 @@ class _UpdateNoteState extends State<UpdateNote> {
       ),
       body: isLoading == true
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator.adaptive(
+                backgroundColor: Colors.orange,
+              ),
             )
           : Form(
               key: formStateKey,

@@ -5,11 +5,10 @@ class CustomQuestion extends StatelessWidget {
   final String answer;
   final void Function()? onTap;
   const CustomQuestion(
-      {Key? key,
+      {super.key,
       required this.question,
       required this.answer,
-      required this.onTap})
-      : super(key: key);
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {

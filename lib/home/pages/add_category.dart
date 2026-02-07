@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddCategory extends StatefulWidget {
-  const AddCategory({Key? key}) : super(key: key);
+  const AddCategory({super.key});
 
   @override
   State<AddCategory> createState() => _AddCategoryState();
@@ -13,26 +13,38 @@ class AddCategory extends StatefulWidget {
 
 class _AddCategoryState extends State<AddCategory> {
   /* ========= Business Logic ========= */
-  GlobalKey<FormState> formStateKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
+  late GlobalKey<FormState> formStateKey;
+  late TextEditingController nameController;
   bool isLoading = false;
   CollectionReference categories =
       FirebaseFirestore.instance.collection('categories');
+
+  @override
+  void initState() {
+    formStateKey = GlobalKey<FormState>();
+    nameController = TextEditingController();
+    super.initState();
+  }
 
   void addCategory(String name) {
     if (formStateKey.currentState!.validate()) {
       isLoading = true;
       setState(() {});
+
       categories.add({
         'id': FirebaseAuth.instance.currentUser!.uid,
         'name': name,
       }).then((value) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Category added.")));
+
         Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
       }).catchError((error) {
         isLoading = false;
         setState(() {});
+
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Failed to add user: $error")));
       });

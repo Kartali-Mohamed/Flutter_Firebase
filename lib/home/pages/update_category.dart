@@ -6,8 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UpdateCategory extends StatefulWidget {
   final String id;
   final String name;
-  const UpdateCategory({Key? key, required this.id, required this.name})
-      : super(key: key);
+  const UpdateCategory({super.key, required this.id, required this.name});
 
   @override
   State<UpdateCategory> createState() => _UpdateCategoryState();
@@ -15,35 +14,42 @@ class UpdateCategory extends StatefulWidget {
 
 class _UpdateCategoryState extends State<UpdateCategory> {
   /* ========= Business Logic ========= */
-  GlobalKey<FormState> formStateKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
+  late GlobalKey<FormState> formStateKey;
+  late TextEditingController nameController;
   bool isLoading = false;
   CollectionReference categories =
       FirebaseFirestore.instance.collection('categories');
+
+  @override
+  void initState() {
+    formStateKey = GlobalKey<FormState>();
+    nameController = TextEditingController();
+    nameController.text = widget.name;
+    super.initState();
+  }
 
   void updateCategory(String name) {
     if (formStateKey.currentState!.validate()) {
       isLoading = true;
       setState(() {});
+
       categories.doc(widget.id).update({
         'name': name,
       }).then((value) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Category updated.")));
+
         Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
       }).catchError((error) {
         isLoading = false;
         setState(() {});
+
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Failed to update user: $error")));
       });
     }
-  }
-
-  @override
-  void initState() {
-    nameController.text = widget.name;
-    super.initState();
   }
 
   @override
@@ -61,7 +67,9 @@ class _UpdateCategoryState extends State<UpdateCategory> {
       ),
       body: isLoading == true
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator.adaptive(
+                backgroundColor: Colors.orange,
+              ),
             )
           : Form(
               key: formStateKey,

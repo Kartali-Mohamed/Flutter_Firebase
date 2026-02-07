@@ -16,11 +16,21 @@ class Register extends StatefulWidget {
 
 class _Registertate extends State<Register> {
   /* ========= Business Logic ========= */
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  GlobalKey<FormState> formStateKey = GlobalKey<FormState>();
+  late TextEditingController usernameController;
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  late GlobalKey<FormState> formStateKey;
   bool isLoading = false;
+  bool isObscureText = true;
+
+  @override
+  void initState() {
+    usernameController = TextEditingController();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    formStateKey = GlobalKey<FormState>();
+    super.initState();
+  }
 
   void signUp(String email, String password) async {
     if (formStateKey.currentState!.validate()) {
@@ -70,7 +80,9 @@ class _Registertate extends State<Register> {
         padding: const EdgeInsets.all(20),
         child: isLoading == true
             ? const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator.adaptive(
+                  backgroundColor: Colors.orange,
+                ),
               )
             : ListView(children: [
                 Form(
@@ -89,6 +101,10 @@ class _Registertate extends State<Register> {
                       CustomTextForm(
                         hinttext: "ُEnter Your Username",
                         mycontroller: usernameController,
+                        suffixIcon: Icon(
+                          Icons.person_outlined,
+                          color: Colors.orange,
+                        ),
                         validator: (val) {
                           if (val!.isEmpty) {
                             return "please enter your username";
@@ -102,6 +118,10 @@ class _Registertate extends State<Register> {
                       CustomTextForm(
                         hinttext: "ُEnter Your Email",
                         mycontroller: emailController,
+                        suffixIcon: Icon(
+                          Icons.email_outlined,
+                          color: Colors.orange,
+                        ),
                         validator: (val) {
                           if (val!.isEmpty) {
                             return "please enter your email";
@@ -115,6 +135,18 @@ class _Registertate extends State<Register> {
                       CustomTextForm(
                         hinttext: "ُEnter Your Password",
                         mycontroller: passwordController,
+                        obscureText: isObscureText,
+                        suffixIcon: GestureDetector(
+                            onTap: () {
+                              isObscureText = !isObscureText;
+                              setState(() {});
+                            },
+                            child: Icon(
+                              isObscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Colors.orange,
+                            )),
                         validator: (val) {
                           if (val!.isEmpty) {
                             return "please enter your password";

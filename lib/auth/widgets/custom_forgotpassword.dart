@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class CustomForgotPassword extends StatelessWidget {
   final void Function()? onTap;
-  const CustomForgotPassword({Key? key, required this.onTap}) : super(key: key);
+  const CustomForgotPassword({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(top: 10, bottom: 20),

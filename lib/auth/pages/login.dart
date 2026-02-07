@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
+
 import '../widgets/custom_buttonauth.dart';
 import '../widgets/custom_buttongoogle.dart';
 import '../widgets/custom_forgotpassword.dart';
@@ -23,6 +24,7 @@ class _LoginState extends State<Login> {
   TextEditingController passwordController = TextEditingController();
   GlobalKey<FormState> formStateKey = GlobalKey<FormState>();
   bool isLoading = false;
+  bool isObscureText = true;
 
   void login(String email, String password) async {
     if (formStateKey.currentState!.validate()) {
@@ -63,21 +65,22 @@ class _LoginState extends State<Login> {
 
   void signInWithGoogle() async {
     // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    //   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-    if (googleUser != null) {
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+    //   if (googleUser != null) {
+    //     // Obtain the auth details from the request
+    //     final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
+    //     final credential = GoogleAuthProvider.credential(
+    //       accessToken: googleAuth.accessToken,
+    //       idToken: googleAuth.idToken,
+    //     );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      if (!mounted) return;
-      Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
-    }
+    // Once signed in, return the UserCredential
+    //     await FirebaseAuth.instance.signInWithCredential(credential);
+    //     if (!mounted) return;
+    //     Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
+    //   }
   }
 
   void resetPassword(String email) async {
@@ -110,7 +113,9 @@ class _LoginState extends State<Login> {
         padding: const EdgeInsets.all(20),
         child: isLoading == true
             ? const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator.adaptive(
+                  backgroundColor: Colors.orange,
+                ),
               )
             : ListView(children: [
                 Form(
@@ -129,6 +134,10 @@ class _LoginState extends State<Login> {
                       CustomTextForm(
                         hinttext: "ُEnter Your Email",
                         mycontroller: emailController,
+                        suffixIcon: Icon(
+                          Icons.email_outlined,
+                          color: Colors.orange,
+                        ),
                         validator: (val) {
                           if (val!.isEmpty) {
                             return "please enter your email";
@@ -142,6 +151,18 @@ class _LoginState extends State<Login> {
                       CustomTextForm(
                         hinttext: "ُEnter Your Password",
                         mycontroller: passwordController,
+                        obscureText: isObscureText,
+                        suffixIcon: GestureDetector(
+                            onTap: () {
+                              isObscureText = !isObscureText;
+                              setState(() {});
+                            },
+                            child: Icon(
+                              isObscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Colors.orange,
+                            )),
                         validator: (val) {
                           if (val!.isEmpty) {
                             return "please enter your password";

@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 
 class AddNote extends StatefulWidget {
   final String docId;
-  const AddNote({Key? key, required this.docId}) : super(key: key);
+  const AddNote({super.key, required this.docId});
 
   @override
   State<AddNote> createState() => _AddNoteState();
@@ -19,35 +19,48 @@ class AddNote extends StatefulWidget {
 
 class _AddNoteState extends State<AddNote> {
   /* ========= Business Logic ========= */
-  GlobalKey<FormState> formStateKey = GlobalKey<FormState>();
-  TextEditingController titleController = TextEditingController();
-  TextEditingController subtitleController = TextEditingController();
+  late GlobalKey<FormState> formStateKey;
+  late TextEditingController titleController;
+  late TextEditingController subtitleController;
+  late CollectionReference notes;
   bool isLoading = false;
   File? file;
   String? url;
+
+  @override
+  void initState() {
+    formStateKey = GlobalKey<FormState>();
+    titleController = TextEditingController();
+    subtitleController = TextEditingController();
+    notes = FirebaseFirestore.instance
+        .collection("categories")
+        .doc(widget.docId)
+        .collection("notes");
+    super.initState();
+  }
 
   void addNote(String title, String subtitle, BuildContext context) {
     if (formStateKey.currentState!.validate()) {
       isLoading = true;
       setState(() {});
-      CollectionReference notes = FirebaseFirestore.instance
-          .collection("categories")
-          .doc(widget.docId)
-          .collection("notes");
 
       notes.add({
         'title': title,
         'subtitle': subtitle,
         'url': url ?? "none",
       }).then((value) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Note added.")));
-        Navigator.of(context).pop();
+
+        Navigator.pop(context);
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => ViewNote(docId: widget.docId)));
       }).catchError((error) {
         isLoading = false;
         setState(() {});
+
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Failed to add user: $error")));
       });
@@ -86,7 +99,9 @@ class _AddNoteState extends State<AddNote> {
       ),
       body: isLoading == true
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator.adaptive(
+                backgroundColor: Colors.orange,
+              ),
             )
           : Form(
               key: formStateKey,
@@ -116,14 +131,17 @@ class _AddNoteState extends State<AddNote> {
                     const SizedBox(height: 20),
                     CustomNoteImageButton(
                         onPressed: () {
-                          addImage();
+                          // addImage();
                         },
                         isSelected: url == null ? false : true),
                     const SizedBox(height: 10),
                     CustomNoteButton(
                       onPressed: () {
-                        addNote(titleController.text, subtitleController.text,
-                            context);
+                        addNote(
+                          titleController.text,
+                          subtitleController.text,
+                          context,
+                        );
                       },
                       type: 'Add',
                     ),
