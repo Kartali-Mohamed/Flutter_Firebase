@@ -5,8 +5,7 @@ class HomeCardFolder extends StatelessWidget {
   final void Function()? onTap;
   final void Function()? onLongPress;
   const HomeCardFolder(
-      {Key? key, required this.title, this.onLongPress, this.onTap})
-      : super(key: key);
+      {super.key, required this.title, this.onLongPress, this.onTap});
 
   @override
   Widget build(BuildContext context) {

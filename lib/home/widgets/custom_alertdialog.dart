@@ -4,8 +4,7 @@ class CustomAlertDialog extends StatelessWidget {
   final void Function()? onDelete;
   final void Function()? onUpdate;
   const CustomAlertDialog(
-      {Key? key, required this.onDelete, required this.onUpdate})
-      : super(key: key);
+      {super.key, required this.onDelete, required this.onUpdate});
 
   @override
   Widget build(BuildContext context) {

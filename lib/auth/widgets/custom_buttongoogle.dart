@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomButtonGoogle extends StatelessWidget {
   final void Function()? onPressed;
-  const CustomButtonGoogle({Key? key, required this.onPressed})
-      : super(key: key);
+  const CustomButtonGoogle({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

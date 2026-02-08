@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomSubtitlePage extends StatelessWidget {
   final String subtitle;
-  const CustomSubtitlePage({Key? key, required this.subtitle})
-      : super(key: key);
+  const CustomSubtitlePage({super.key, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
